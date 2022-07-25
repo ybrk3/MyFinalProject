@@ -1,4 +1,5 @@
-﻿using DataAccess.Abstract;
+﻿using Core.DataAccess.EntityFramework;
+using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace DataAccess.Concrete.EntityFramework
 {
     //Category'leri database'e aktaracak yöntemler
-    public class EfCategoryDal : ICategoryDal
+    public class EfCategoryDal : EfEntityRepositoryBase<Category, NorthwindContext>, ICategoryDal
     {
         public void Add(Category category)
         {
@@ -29,7 +30,10 @@ namespace DataAccess.Concrete.EntityFramework
 
         public List<Category> GetAll(Expression<Func<Category, bool>> filter = null)
         {
-            throw new NotImplementedException();
+            using (NorthwindContext context = new NorthwindContext())
+            {
+                return filter == null ? context.Set<Category>().ToList() : context.Set<Category>().Where(filter).ToList();
+            }      
         }
 
         public List<Product> GetAllByCategory(int categoryId)

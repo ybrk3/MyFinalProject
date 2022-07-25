@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Business.Abstract
         
         //UnitPrice decimal olduğu için parametre min ve max decimal atandı.
         List<Product> GetByUnitPrice(decimal min, decimal max);
+
+        List<ProductDetailDto> GetProductDetails();
 
     }
 }

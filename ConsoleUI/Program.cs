@@ -5,14 +5,27 @@ using DataAccess.Abstract;
 using DataAccess.Concrete;
 using DataAccess.Concrete.EntityFramework;
 
-System.DateTime x = new System.DateTime();
-ProductManager productManager = new ProductManager(new EfProductDal());
-//() içerisinde kullanılacak entity'e uygun DataAccess class'ı newlenir/tanımlanır
+ProductTest();
 
-foreach (var product in productManager.GetByUnitPrice(40,100))
+//CategoryTest();
+
+static void ProductTest()
 {
-    Console.WriteLine(product.ProductName);
+    ProductManager productManager = new ProductManager(new EfProductDal());
+    //() içerisinde kullanılacak entity'e uygun DataAccess class'ı newlenir/tanımlanır
+
+    foreach (var product in productManager.GetProductDetails())
+    {
+        Console.WriteLine(product.ProductName+"/"+product.CategoryName);
+    }
 }
 
+static void CategoryTest()
+{
+    CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
 
-
+    foreach (var category in categoryManager.GetAll())
+    {
+        Console.WriteLine(category.CategoryName);
+    }
+}
