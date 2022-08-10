@@ -14,10 +14,20 @@ static void ProductTest()
     ProductManager productManager = new ProductManager(new EfProductDal());
     //() içerisinde kullanılacak entity'e uygun DataAccess class'ı newlenir/tanımlanır
 
-    foreach (var product in productManager.GetProductDetails())
+    var result = productManager.GetProductDetails();
+
+    if (result.Success==true)
     {
-        Console.WriteLine(product.ProductName+"/"+product.CategoryName);
+        foreach (var product in result.Data)
+        {
+            Console.WriteLine(product.ProductName + "/" + product.CategoryName);
+        }
     }
+    else
+    {
+        Console.WriteLine(result.Message);
+    }
+    
 }
 
 static void CategoryTest()
