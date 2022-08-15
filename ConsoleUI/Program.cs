@@ -5,9 +5,9 @@ using DataAccess.Abstract;
 using DataAccess.Concrete;
 using DataAccess.Concrete.EntityFramework;
 
-ProductTest();
+//ProductTest();
 
-//CategoryTest();
+CategoryTest();
 
 static void ProductTest()
 {

@@ -40,10 +40,10 @@ namespace Business.Concrete
         {
             //iş kodları, şartlar yazılır ona göre aşağıdaki method return edilir.
             //Yetkisi var mı? vb.
-            if (DateTime.Now.Hour == 15)
-            {
-                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
-            }
+            //if (DateTime.Now.Hour == 9)
+            //{
+            //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            //}
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
 
         }
