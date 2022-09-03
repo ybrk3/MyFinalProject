@@ -1,5 +1,8 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
+using Business.DependencyResolvers.Autofac;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 
@@ -12,17 +15,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Note; AOP -- Bir method'un önünde-sonunda-hata verdiðinde çalýþan kod parçacýklarý -> A.K.A. [Loglama]
+//-----------------------------------
+//Autofac kullanýlýcaðý bildiriliyor;;
+//AutofacServiceProviderFactory <== Autofac.Extensions.DependencyInjection package
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+{
+    builder.RegisterModule(new AutofacBusinessModule());
+});
+//----------------------------------
+
+//Note; Aspect Oriented Programming -- Bir method'un önünde-sonunda-hata verdiðinde çalýþan kod parçacýklarý -> A.K.A. [Loglama]
 
 
 //Arka planda bir referans oluþturma. IoC kendisi new'liyor
 //IProductservice baðýmlýlýðý olduðunda ProductManager'i new'ler/oluþturur. 
 //Singleton içerisinde data tutmuyorsak kullanýlýr
-builder.Services.AddSingleton<IProductService,ProductManager>();
+//builder.Services.AddSingleton<IProductService,ProductManager>();
 
-//ProductManager new'lenirken IProductDal(Hangi data base baðlanma yöntemi isteniyorsa ona göre) parametresini new'liyor
-//O yüzden EntityFramework kullanýlacaðý için EfProductdal AddSingleton için girilir
-builder.Services.AddSingleton<IProductDal, EfProductDal>();
+////ProductManager new'lenirken IProductDal(Hangi data base baðlanma yöntemi isteniyorsa ona göre) parametresini new'liyor
+////O yüzden EntityFramework kullanýlacaðý için EfProductdal AddSingleton için girilir
+//builder.Services.AddSingleton<IProductDal, EfProductDal>();
+//-------------------------------------------
 
 var app = builder.Build();
 
@@ -33,6 +48,8 @@ if (app.Environment.IsDevelopment())
  
     app.UseSwaggerUI();
 }
+
+
 
 app.UseHttpsRedirection();
 
