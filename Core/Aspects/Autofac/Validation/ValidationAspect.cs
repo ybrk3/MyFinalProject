@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Aspects.Autofac.Validation
 {
-    public class ValidationAspect : MethodInterception
+    public class ValidationAspect : MethodInterception //Aspect
     {
         private Type _validatorType;
 
@@ -18,6 +18,7 @@ namespace Core.Aspects.Autofac.Validation
         //Attribute'de Type'la geçilir.
         public ValidationAspect(Type validatorType)
         {
+            //defensive coding;
             //verilen validatorType'ın IValidator olup olmadığı kontrolü yapılır
             if (!typeof(IValidator).IsAssignableFrom(validatorType))
             {
@@ -30,7 +31,7 @@ namespace Core.Aspects.Autofac.Validation
         //IInvocation Castle.Dynamic.Proxy'den gelir.
         protected override void OnBefore(IInvocation invocation)
         {
-            //Reflection Run-Time'da methodları çalıştırır.
+            //Reflection Run-Time'da validasyon tipi new'lenir
             var validator = (IValidator)Activator.CreateInstance(_validatorType);
 
             //Validator'ın çalışma tiplerinden (Basetype) ilki yakalanır

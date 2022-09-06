@@ -17,6 +17,7 @@ namespace Business.Abstract
         //UnitPrice decimal olduğu için parametre min ve max decimal atandı.
         IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max);
 
+        IResult Update(Product product);
         IResult Add(Product product);
         IDataResult<Product> GetById(int productId);
         IDataResult<List<ProductDetailDto>> GetProductDetails();

@@ -18,6 +18,9 @@ namespace Core.CrossCuttingConcerns
         //Ayrıca, nesneyi FluentValidation içerisindeki Validate methodunun parametresi olarak..
         //kullanabilmek adına object olarak entity method parametresi yapılır.
 
+
+        //validator : doğrulama kurallarının olduğu class
+        //entity doğrulanacak nesne
         public static void Validate(IValidator validator, object entity)
         {
             var context = new ValidationContext<object>(entity);
