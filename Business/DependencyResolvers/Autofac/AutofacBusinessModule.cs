@@ -5,6 +5,7 @@ using Business.CCS;
 using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
+using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using System;
@@ -24,8 +25,16 @@ namespace Business.DependencyResolvers.Autofac
             //IProductService verildiğinde ProductManager'ı çalıştır;;
             builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance();
             builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
+
             builder.RegisterType<CategoryManager>().As<ICategoryService>().SingleInstance();
             builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().SingleInstance();
+
+            builder.RegisterType<UserManager>().As<IUserService>();
+            builder.RegisterType<EfUserDal>().As<IUserDal>();
+
+            builder.RegisterType<AuthManager>().As<IAuthService>();
+            builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
             //SingleInstance ile sadece bir kere örnek oluşturulur ve uygulama kullanılırken her kullanıcı tarafından fazla instance olması engellenir
 
 
