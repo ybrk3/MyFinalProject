@@ -3,6 +3,8 @@ using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns;
 using Core.Utilities.Business;
@@ -36,10 +38,12 @@ namespace Business.Concrete
 
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
+        [TransactionScopeAspect]
         public IResult Add(Product product)
         {
             IResult result = BusinessRules.Run(CheckIfProductCountOfCategory(product.CategoryId),
-                CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceeded());
+                CheckIfProductNameExists(product.ProductName));
 
             if (result != null)
             {
@@ -48,15 +52,25 @@ namespace Business.Concrete
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("IProductService.Get")]
+        [TransactionScopeAspect]
+        public IResult Delete(Product product)
+        {
+            _productDal.Delete(product);
+            return new SuccessResult(Messages.ProductDeleted);
+        }
 
-
+        [CacheAspect]
+        [PerformanceAspect(5)] //Bu method'un çalışması 5sn'i geçerse uyarı verir
         public IDataResult<List<Product>> GetAll()
         {
-          
+
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
 
         }
 
+        [CacheAspect]
         public IDataResult<List<Product>> GetAllByCategoryId(int categoryID)
         {
             var result = _productDal.GetAll(p => p.CategoryId == categoryID);
@@ -68,6 +82,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(result, Messages.ProductsListed);
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             var result = _productDal.Get(P => P.ProductId == productId);
@@ -78,6 +93,7 @@ namespace Business.Concrete
             return new SuccessDataResult<Product>(result, Messages.ProductsListed);
         }
 
+        [CacheAspect]
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
             var result = _productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max);
@@ -101,11 +117,16 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
+        [TransactionScopeAspect]
         public IResult Update(Product product)
         {
             _productDal.Update(product);
             return new SuccessResult();
         }
+
+
+        //Business Codes;
 
         //private çünkü bu methodun bu class içerisinde kullanılması istenmektedir.
         private IResult CheckIfProductCountOfCategory(int categoryId)
@@ -116,7 +137,7 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
             }
-            return new ErrorResult();
+            return new SuccessResult();
         }
 
         private IResult CheckIfProductNameExists(string productName)
@@ -128,14 +149,6 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
-        private IResult CheckIfCategoryLimitExceeded()
-        {
-            var result = _categoryService.GetAll();
-            if (result.Data.Count>15)
-            {
-                return new ErrorResult(Messages.CategoryLimitExceeded);
-            }
-            return new SuccessResult();
-        }
+
     }
 }

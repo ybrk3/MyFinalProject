@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.CrossCuttingConcerns
+namespace Core.CrossCuttingConcerns.Validation
 {
     //CrossCuttingConcerns uygulamanın çalışma sırasında her katmanında çalışır
     public static class ValidationTool

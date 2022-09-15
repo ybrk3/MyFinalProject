@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.DependencyResolvers.Autofac
-{
+{   //Bu projeye özgü injection'lar
     //Autofac module'ü !!
     public class AutofacBusinessModule : Module
     {
