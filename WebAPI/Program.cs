@@ -1,4 +1,4 @@
-using Autofac;
+ï»¿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
@@ -19,7 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-//API'ye jwt kullanılacağı bildiriliyor
+builder.Services.AddCors(); //Front'dan eriÅŸmek iÃ§in
+
+//API'ye jwt kullanÃ½lacaÃ°Ã½ bildiriliyor
 
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -48,7 +50,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //-----------------------------------
-//Autofac kullanılıcağı bildiriliyor;;
+//Autofac kullanÃ½lÃ½caÃ°Ã½ bildiriliyor;;
 //AutofacServiceProviderFactory <== Autofac.Extensions.DependencyInjection package
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -58,16 +60,16 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 });
 //----------------------------------
 
-//Note; Aspect Oriented Programming -- Bir method'un önünde-sonunda-hata verdiğinde çalışan kod parçacıkları -> A.K.A. [Loglama]
+//Note; Aspect Oriented Programming -- Bir method'un Ã¶nÃ¼nde-sonunda-hata verdiÃ°inde Ã§alÃ½Ã¾an kod parÃ§acÃ½klarÃ½ -> A.K.A. [Loglama]
 
 
-//Arka planda bir referans oluşturma. IoC kendisi new'liyor
-//IProductservice bağımlılığı olduğunda ProductManager'i new'ler/oluşturur. 
-//Singleton içerisinde data tutmuyorsak kullanılır
+//Arka planda bir referans oluÃ¾turma. IoC kendisi new'liyor
+//IProductservice baÃ°Ã½mlÃ½lÃ½Ã°Ã½ olduÃ°unda ProductManager'i new'ler/oluÃ¾turur. 
+//Singleton iÃ§erisinde data tutmuyorsak kullanÃ½lÃ½r
 //builder.Services.AddSingleton<IProductService,ProductManager>();
 
-////ProductManager new'lenirken IProductDal(Hangi data base bağlanma yöntemi isteniyorsa ona göre) parametresini new'liyor
-////O yüzden EntityFramework kullanılacağı için EfProductdal AddSingleton için girilir
+////ProductManager new'lenirken IProductDal(Hangi data base baÃ°lanma yÃ¶ntemi isteniyorsa ona gÃ¶re) parametresini new'liyor
+////O yÃ¼zden EntityFramework kullanÃ½lacaÃ°Ã½ iÃ§in EfProductdal AddSingleton iÃ§in girilir
 //builder.Services.AddSingleton<IProductDal, EfProductDal>();
 //-------------------------------------------
 
@@ -81,7 +83,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureCustomExceptionMiddleware();
 
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 app.UseRouting();

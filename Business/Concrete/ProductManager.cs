@@ -37,7 +37,7 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
-        [SecuredOperation("product.add,admin")]
+        //[SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         [TransactionScopeAspect]
@@ -82,6 +82,8 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<Product>>(result, Messages.ProductsListed);
         }
+
+      
 
         [CacheAspect]
         public IDataResult<Product> GetById(int productId)

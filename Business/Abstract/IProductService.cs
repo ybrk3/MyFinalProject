@@ -23,6 +23,5 @@ namespace Business.Abstract
         IDataResult<Product> GetById(int productId);
         IDataResult<List<ProductDetailDto>> GetProductDetails();
        
-
     }
 }
